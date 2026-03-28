@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ff5fb2" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Gurlpowerrr Doll Builder" />
+  <link rel="manifest" href="app.webmanifest" />
+  <title>Gurlpowerrr Doll Builder</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Y2K doll maker</p>
+        <h1>Gurlpowerrr Doll Builder</h1>
+        <p class="subtitle">Click a category, click an item, and your doll snaps right into the preview box.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="saveBtn" class="primary">Save doll</button>
+        <button id="randomBtn">Randomize</button>
+        <button id="clearCategoryBtn">Clear current category</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="preview-panel">
+        <div class="preview-card">
+          <div class="preview-header">
+            <h2>Your doll</h2>
+            <p id="statusText">Pick a category and click an item ✨</p>
+          </div>
+          <div class="doll-stage-wrap">
+            <div class="sparkle sparkle-a">✦</div>
+            <div class="sparkle sparkle-b">♥</div>
+            <div class="sparkle sparkle-c">✦</div>
+            <div id="dollStage" class="doll-stage">
+              <img id="layer-body" class="layer" alt="" />
+              <img id="layer-bottoms" class="layer" alt="" />
+              <img id="layer-tops" class="layer" alt="" />
+              <img id="layer-dresses" class="layer" alt="" />
+              <img id="layer-hair" class="layer" alt="" />
+            </div>
+          </div>
+
+          <div class="selection-summary">
+            <div><span>Body</span><strong id="summary-bodies">—</strong></div>
+            <div><span>Hair</span><strong id="summary-hair">—</strong></div>
+            <div><span>Top</span><strong id="summary-tops">—</strong></div>
+            <div><span>Bottom</span><strong id="summary-bottoms">—</strong></div>
+            <div><span>Dress</span><strong id="summary-dresses">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls-panel">
+        <div class="tabs" id="tabs"></div>
+        <div class="toolbar">
+          <div>
+            <h2 id="categoryTitle">Bodies</h2>
+            <p id="categoryHint">Choose an item to place it on your doll.</p>
+          </div>
+          <input id="searchInput" type="search" placeholder="Search this category" />
+        </div>
+        <div id="thumbGrid" class="thumb-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="manifest.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+
+</html>
