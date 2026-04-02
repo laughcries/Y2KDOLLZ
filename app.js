@@ -8,6 +8,7 @@ const categories = [
   { key: 'tops', label: 'Tops', layerId: 'layer-tops' },
   { key: 'bottoms', label: 'Bottoms', layerId: 'layer-bottoms' },
   { key: 'dresses', label: 'Dresses', layerId: 'layer-dresses' },
+  { key: 'accessories', label: 'Accessories', layerId: 'layer-accessories' },
 ];
 
 const state = {
