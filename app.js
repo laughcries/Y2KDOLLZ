@@ -11,7 +11,7 @@ const categories = [
 ];
 
 const defaultTransforms = {
-  bodies: { x: 50, y: 56, scale: 0.9, flipX: 1 },
+  bodies: { x: 50, y: 56, scale: 0.2, flipX: 1 },
   hair: { x: 50, y: 38, scale: 0.9, flipX: 1 },
   tops: { x: 50, y: 56, scale: 0.9, flipX: 1 },
   bottoms: { x: 50, y: 56, scale: 0.9, flipX: 1 },
