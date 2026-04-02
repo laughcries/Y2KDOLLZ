@@ -56,14 +56,18 @@
             </div>
           </div>
 
-          <div class="selection-summary">
-            <div><span>Body</span><strong id="summary-bodies">—</strong></div>
-            <div><span>Hair</span><strong id="summary-hair">—</strong></div>
-            <div><span>Top</span><strong id="summary-tops">—</strong></div>
-            <div><span>Bottom</span><strong id="summary-bottoms">—</strong></div>
-            <div><span>Dress</span><strong id="summary-dresses">—</strong></div>
-            <div><span>Accessories</span><strong id="summary-accessories">—</strong></div>
-          </div>
+          <div class="editor-controls">
+  <label class="editor-scale">
+    <span>Scale</span>
+    <input id="scaleSlider" type="range" min="40" max="220" value="100" />
+    <strong id="scaleValue">100%</strong>
+  </label>
+
+  <div class="editor-buttons">
+    <button id="flipBtn" type="button">Flip</button>
+    <button id="resetLayerBtn" type="button">Reset item</button>
+  </div>
+</div>
         </div>
       </section>
 
