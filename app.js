@@ -477,7 +477,7 @@ scaleSlider.addEventListener('input', (event) => {
   let value = Number(event.target.value);
 
   // ✅ prevent weird jump behavior
-  if (value < 20) value = 20;
+  if (value < 5) value = 5;
 
   transform.scale = value / 100;
 
