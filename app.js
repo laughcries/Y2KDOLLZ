@@ -48,6 +48,9 @@ const state = {
   dragTarget: null,
 };
 
+const historyStack = [];
+let dragSnapshotTaken = false;
+
 const tabs = document.getElementById('tabs');
 const thumbGrid = document.getElementById('thumbGrid');
 const categoryTitle = document.getElementById('categoryTitle');
@@ -62,6 +65,57 @@ const scaleSlider = document.getElementById('scaleSlider');
 const scaleValue = document.getElementById('scaleValue');
 const flipBtn = document.getElementById('flipBtn');
 const resetLayerBtn = document.getElementById('resetLayerBtn');
+const undoBtn = document.getElementById('undoBtn');
+
+function cloneStateForHistory() {
+  return JSON.parse(JSON.stringify({
+    selections: state.selections,
+    transforms: state.transforms,
+    editorTarget: state.editorTarget,
+    activeCategory: state.activeCategory,
+  }));
+}
+
+function pushHistory() {
+  historyStack.push(cloneStateForHistory());
+
+  if (historyStack.length > 100) {
+    historyStack.shift();
+  }
+}
+
+function undoLastChange() {
+  if (!historyStack.length) {
+    statusText.textContent = 'Nothing to undo.';
+    return;
+  }
+
+  const previous = historyStack.pop();
+
+  state.activeCategory = previous.activeCategory;
+  state.selections = previous.selections;
+  state.transforms = previous.transforms;
+  state.editorTarget = previous.editorTarget;
+  state.dragTarget = null;
+
+  categoryTitle.textContent =
+    categories.find(c => c.key === state.activeCategory)?.label || 'Bodies';
+
+  const activeCategory = categories.find(c => c.key === state.activeCategory);
+  categoryHint.textContent =
+    state.activeCategory === 'accessories'
+      ? 'Click accessories to add or remove multiple items.'
+      : state.activeCategory === 'dresses'
+      ? 'Picking a dress clears tops and bottoms.'
+      : 'Choose an item to place it on your doll.';
+
+  refreshLayers();
+  renderTabs();
+  renderThumbs();
+  updateEditorUI();
+
+  statusText.textContent = 'Undid last change.';
+}
 
 function labelFromFile(fileName) {
   return fileName
@@ -160,6 +214,8 @@ function refreshLayers() {
 }
 
 function selectItem(categoryKey, fileName) {
+  pushHistory();
+
   if (categoryKey === 'accessories') {
     const alreadySelected = state.selections.accessories.includes(fileName);
 
@@ -285,7 +341,9 @@ function updateEditorUI() {
     return;
   }
 
-  const percent = Math.round(transform.scale * 100);
+  let percent = Math.round(transform.scale * 100);
+  if (percent < 0) percent = 0;
+
   scaleSlider.value = percent;
   scaleValue.textContent = `${percent}%`;
 }
@@ -296,6 +354,8 @@ function setEditorTarget(category, fileName = null) {
 }
 
 function resetEditorTargetTransform() {
+  pushHistory();
+
   const { category, fileName } = state.editorTarget;
 
   if (category === 'accessories' && fileName) {
@@ -308,6 +368,8 @@ function resetEditorTargetTransform() {
 }
 
 function clearCurrentCategory() {
+  pushHistory();
+
   const key = state.activeCategory;
 
   if (key === 'accessories') {
@@ -332,6 +394,8 @@ function randomFromPool(pool) {
 }
 
 function randomizeDoll() {
+  pushHistory();
+
   ['bodies', 'hair', 'tops', 'bottoms', 'dresses'].forEach(categoryKey => {
     state.selections[categoryKey] = randomFromPool(manifest[categoryKey]);
     if (defaultTransforms[categoryKey]) {
@@ -439,6 +503,9 @@ dollStage.addEventListener('mousedown', (event) => {
   const category = layer.dataset.category;
   const fileName = layer.dataset.fileName || null;
 
+  pushHistory();
+  dragSnapshotTaken = true;
+
   setEditorTarget(category, fileName);
   state.dragTarget = { category, fileName };
 
@@ -468,26 +535,29 @@ document.addEventListener('mousemove', (event) => {
 
 document.addEventListener('mouseup', () => {
   state.dragTarget = null;
+  dragSnapshotTaken = false;
 });
 
 scaleSlider.addEventListener('input', (event) => {
   const transform = getCurrentEditorTransform();
   if (!transform) return;
 
-  let value = Number(event.target.value);
+  pushHistory();
 
-  // ✅ prevent weird jump behavior
-  if (value < 5) value = 5;
+  let value = Number(event.target.value);
+  if (value < 0) value = 0;
 
   transform.scale = value / 100;
 
-  scaleValue.textContent = `${value}%`; // update UI immediately
+  scaleValue.textContent = `${value}%`;
   refreshLayers();
 });
 
 flipBtn.addEventListener('click', () => {
   const transform = getCurrentEditorTransform();
   if (!transform) return;
+
+  pushHistory();
 
   transform.flipX *= -1;
   refreshLayers();
@@ -500,6 +570,10 @@ resetLayerBtn.addEventListener('click', () => {
 clearCategoryBtn.addEventListener('click', clearCurrentCategory);
 randomBtn.addEventListener('click', randomizeDoll);
 saveBtn.addEventListener('click', saveDoll);
+
+if (undoBtn) {
+  undoBtn.addEventListener('click', undoLastChange);
+}
 
 refreshLayers();
 renderTabs();
