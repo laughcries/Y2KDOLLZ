@@ -474,8 +474,14 @@ scaleSlider.addEventListener('input', (event) => {
   const transform = getCurrentEditorTransform();
   if (!transform) return;
 
-  transform.scale = Number(event.target.value) / 100;
-  updateEditorUI();
+  let value = Number(event.target.value);
+
+  // ✅ prevent weird jump behavior
+  if (value < 20) value = 20;
+
+  transform.scale = value / 100;
+
+  scaleValue.textContent = `${value}%`; // update UI immediately
   refreshLayers();
 });
 
