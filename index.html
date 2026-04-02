@@ -47,6 +47,8 @@
             <div class="sparkle sparkle-a">✦</div>
             <div class="sparkle sparkle-b">♥</div>
             <div class="sparkle sparkle-c">✦</div>
+            <div class="sparkle sparkle-d">♥</div>
+
 
             <div id="dollStage" class="doll-stage">
               <img id="layer-body" class="layer" alt="" />
@@ -65,14 +67,30 @@
     <strong id="scaleValue">100%</strong>
   </label>
 
-  <div class="editor-buttons">
-    <button id="flipBtn" type="button">Flip</button>
-    <button id="resetLayerBtn" type="button">Reset item</button>
-    <button id="undoBtn" type="button">Undo</button>
-  </div>
+  
 </div>
         </div>
       </section>
+      <section class="controls-panel">
+  <div class="options-box">
+    <div class="tabs" id="tabs"></div>
+
+    <div class="toolbar">
+      <div>
+        <h2 id="categoryTitle">Bodies</h2>
+        <p id="categoryHint">Choose an item to place it on your doll.</p>
+      </div>
+    </div>
+
+    <div id="thumbGrid" class="thumb-grid"></div>
+  </div>
+
+  <div class="bottom-actions">
+    <button id="saveBtn" class="primary">Save doll</button>
+    <button id="randomBtn">Randomize</button>
+    <button id="clearCategoryBtn">Clear current category</button>
+  </div>
+</section>
 
       <section class="controls-panel">
         <div class="tabs" id="tabs"></div>
