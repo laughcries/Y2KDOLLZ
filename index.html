@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Gurlpowerrr Doll Builder" />
   <link rel="manifest" href="app.webmanifest" />
   <title>Gurlpowerrr Doll Builder</title>
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <div class="page">
@@ -71,16 +71,16 @@
     </main>
   </div>
 
-  <script src="manifest.js?v=2"></script>
-<script src="app.js?v=2"></script>
+  <script src="manifest.js?v=3"></script>
+<script src="app.js?v=3"></script>
 
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
-      });
-    }
-  </script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+    });
+  }
+</script>
 </body>
 
 </html>
