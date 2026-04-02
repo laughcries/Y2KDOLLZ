@@ -1,4 +1,3 @@
-
 const manifest = window.DOLL_MANIFEST;
 const defaults = window.DEFAULT_SELECTIONS;
 
@@ -11,10 +10,20 @@ const categories = [
   { key: 'accessories', label: 'Accessories', layerId: 'layer-accessories' },
 ];
 
+const defaultLayerPositions = {
+  bodies: { x: 50, y: 52, scale: 1.45 },
+  hair: { x: 50, y: 34, scale: 1.45 },
+  tops: { x: 50, y: 52, scale: 1.45 },
+  bottoms: { x: 50, y: 52, scale: 1.45 },
+  dresses: { x: 50, y: 52, scale: 1.45 },
+  accessories: { x: 50, y: 50, scale: 1.2 },
+};
+
 const state = {
   activeCategory: 'bodies',
   search: '',
-  selections: { ...defaults }
+  selections: { ...defaults },
+  positions: JSON.parse(JSON.stringify(defaultLayerPositions)),
 };
 
 const tabs = document.getElementById('tabs');
@@ -26,6 +35,7 @@ const statusText = document.getElementById('statusText');
 const clearCategoryBtn = document.getElementById('clearCategoryBtn');
 const randomBtn = document.getElementById('randomBtn');
 const saveBtn = document.getElementById('saveBtn');
+const dollStage = document.getElementById('dollStage');
 
 function labelFromFile(fileName) {
   return fileName
@@ -41,16 +51,32 @@ function assetPath(fileName) {
   return fileName;
 }
 
+function applyLayerPosition(categoryKey) {
+  const category = categories.find(c => c.key === categoryKey);
+  const layer = document.getElementById(category.layerId);
+  const pos = state.positions[categoryKey];
+
+  if (!layer || !pos) return;
+
+  layer.style.left = `${pos.x}%`;
+  layer.style.top = `${pos.y}%`;
+  layer.style.transform = `translate(-50%, -50%) scale(${pos.scale})`;
+  layer.style.transformOrigin = 'center center';
+}
+
 function setLayer(categoryKey, fileName) {
   const category = categories.find(c => c.key === categoryKey);
   const layer = document.getElementById(category.layerId);
+
   if (!fileName) {
     layer.removeAttribute('src');
     layer.style.display = 'none';
     return;
   }
+
   layer.src = assetPath(fileName);
   layer.style.display = 'block';
+  applyLayerPosition(categoryKey);
 }
 
 function refreshLayers() {
@@ -60,6 +86,11 @@ function refreshLayers() {
   document.getElementById('summary-tops').textContent = state.selections.tops ? labelFromFile(state.selections.tops) : '—';
   document.getElementById('summary-bottoms').textContent = state.selections.bottoms ? labelFromFile(state.selections.bottoms) : '—';
   document.getElementById('summary-dresses').textContent = state.selections.dresses ? labelFromFile(state.selections.dresses) : '—';
+
+  const accessoriesSummary = document.getElementById('summary-accessories');
+  if (accessoriesSummary) {
+    accessoriesSummary.textContent = state.selections.accessories ? labelFromFile(state.selections.accessories) : '—';
+  }
 }
 
 function selectItem(categoryKey, fileName) {
@@ -76,6 +107,7 @@ function selectItem(categoryKey, fileName) {
     statusText.textContent = `${categories.find(c => c.key === categoryKey).label.slice(0, -1) || 'Item'} added ✨`;
   }
 
+  applyLayerPosition(categoryKey);
   refreshLayers();
   renderThumbs();
 }
@@ -129,6 +161,44 @@ function renderThumbs() {
   });
 }
 
+function makeLayerDraggable(categoryKey) {
+  const category = categories.find(c => c.key === categoryKey);
+  const layer = document.getElementById(category.layerId);
+
+  if (!layer) return;
+
+  let isDragging = false;
+
+  layer.style.cursor = 'grab';
+
+  layer.addEventListener('mousedown', (event) => {
+    if (!layer.getAttribute('src')) return;
+    isDragging = true;
+    layer.style.cursor = 'grabbing';
+    event.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (event) => {
+    if (!isDragging) return;
+
+    const stageRect = dollStage.getBoundingClientRect();
+
+    const xPercent = ((event.clientX - stageRect.left) / stageRect.width) * 100;
+    const yPercent = ((event.clientY - stageRect.top) / stageRect.height) * 100;
+
+    state.positions[categoryKey].x = Math.max(0, Math.min(100, xPercent));
+    state.positions[categoryKey].y = Math.max(0, Math.min(100, yPercent));
+
+    applyLayerPosition(categoryKey);
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    layer.style.cursor = 'grab';
+  });
+}
+
 searchInput.addEventListener('input', (event) => {
   state.search = event.target.value;
   renderThumbs();
@@ -136,6 +206,7 @@ searchInput.addEventListener('input', (event) => {
 
 clearCategoryBtn.addEventListener('click', () => {
   state.selections[state.activeCategory] = null;
+  state.positions[state.activeCategory] = { ...defaultLayerPositions[state.activeCategory] };
   statusText.textContent = `${categories.find(c => c.key === state.activeCategory).label} cleared.`;
   refreshLayers();
   renderThumbs();
@@ -144,10 +215,11 @@ clearCategoryBtn.addEventListener('click', () => {
 randomBtn.addEventListener('click', () => {
   categories.forEach(category => {
     const pool = manifest[category.key];
-    state.selections[category.key] = pool[Math.floor(Math.random() * pool.length)];
+    state.selections[category.key] = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+    state.positions[category.key] = { ...defaultLayerPositions[category.key] };
   });
 
-  if (Math.random() > 0.5) {
+  if (manifest.dresses.length && Math.random() > 0.5) {
     state.selections.dresses = manifest.dresses[Math.floor(Math.random() * manifest.dresses.length)];
     state.selections.tops = null;
     state.selections.bottoms = null;
@@ -161,32 +233,40 @@ randomBtn.addEventListener('click', () => {
 });
 
 saveBtn.addEventListener('click', async () => {
-  const ordered = ['bodies', 'bottoms', 'tops', 'dresses', 'hair']
-    .map(key => state.selections[key])
-    .filter(Boolean);
+  const ordered = ['bodies', 'bottoms', 'tops', 'dresses', 'hair', 'accessories']
+    .map(key => ({
+      key,
+      fileName: state.selections[key],
+      position: state.positions[key],
+    }))
+    .filter(item => item.fileName);
 
   if (!ordered.length) {
     statusText.textContent = 'Pick at least one layer before saving.';
     return;
   }
 
-  const images = await Promise.all(ordered.map(loadImage));
-  const bounds = images.reduce((acc, img) => {
-    return {
-      width: Math.max(acc.width, img.naturalWidth),
-      height: Math.max(acc.height, img.naturalHeight),
-    };
-  }, { width: 1, height: 1 });
+  const images = await Promise.all(
+    ordered.map(async (item) => ({
+      ...item,
+      img: await loadImage(item.fileName),
+    }))
+  );
 
-  const scale = 8;
   const canvas = document.createElement('canvas');
-  canvas.width = bounds.width * scale;
-  canvas.height = bounds.height * scale;
+  canvas.width = dollStage.clientWidth * 2;
+  canvas.height = dollStage.clientHeight * 2;
+
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
 
-  images.forEach(img => {
-    ctx.drawImage(img, 0, 0, img.naturalWidth * scale, img.naturalHeight * scale);
+  images.forEach(({ img, position }) => {
+    const drawWidth = img.naturalWidth * position.scale * 2;
+    const drawHeight = img.naturalHeight * position.scale * 2;
+    const x = ((position.x / 100) * canvas.width) - (drawWidth / 2);
+    const y = ((position.y / 100) * canvas.height) - (drawHeight / 2);
+
+    ctx.drawImage(img, x, y, drawWidth, drawHeight);
   });
 
   const link = document.createElement('a');
@@ -205,6 +285,10 @@ function loadImage(fileName) {
     img.src = assetPath(fileName);
   });
 }
+
+categories.forEach(category => {
+  makeLayerDraggable(category.key);
+});
 
 refreshLayers();
 renderTabs();
