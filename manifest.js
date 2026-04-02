@@ -4,7 +4,6 @@ window.DOLL_MANIFEST = {
   tops: [],
   bottoms: [],
   dresses: [],
-
   accessories: [
     "assets/tie.gif",
     "assets/tie16.gif",
