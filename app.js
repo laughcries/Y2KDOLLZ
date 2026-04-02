@@ -11,7 +11,7 @@ const categories = [
 ];
 
 const defaultLayerPositions = {
-  bodies: { x: 50, y: 56, scale: 0.35 },
+  bodies: { x: 50, y: 56, scale: 0.28 },
   hair: { x: 50, y: 38, scale: 0.95 },
   tops: { x: 50, y: 56, scale: 0.95 },
   bottoms: { x: 50, y: 56, scale: 0.95 },
