@@ -186,16 +186,20 @@ body {
 .layer {
   position: absolute;
   left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: none;
-  max-width: 100%;
-  max-height: 100%;
+
+  width: 80%;   /* 🔥 controls size */
+  height: auto;
+
   image-rendering: pixelated;
-  pointer-events: none;
+  pointer-events: auto; /* IMPORTANT for dragging later */
 }
 
-#layer-body { z-index: 1; }
+#layer-body { z-index: 1;
+            width: 90%;
+            }
 #layer-bottoms { z-index: 2; }
 #layer-tops { z-index: 3; }
 #layer-dresses { z-index: 4; }
