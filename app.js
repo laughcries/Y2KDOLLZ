@@ -11,12 +11,12 @@ const categories = [
 ];
 
 const defaultLayerPositions = {
-  bodies: { x: 50, y: 52, scale: 1.45 },
-  hair: { x: 50, y: 34, scale: 1.45 },
-  tops: { x: 50, y: 52, scale: 1.45 },
-  bottoms: { x: 50, y: 52, scale: 1.45 },
-  dresses: { x: 50, y: 52, scale: 1.45 },
-  accessories: { x: 50, y: 50, scale: 1.2 },
+  bodies: { x: 50, y: 56, scale: 0.95 },
+  hair: { x: 50, y: 38, scale: 0.95 },
+  tops: { x: 50, y: 56, scale: 0.95 },
+  bottoms: { x: 50, y: 56, scale: 0.95 },
+  dresses: { x: 50, y: 56, scale: 0.95 },
+  accessories: { x: 50, y: 50, scale: 0.85 },
 };
 
 const state = {
