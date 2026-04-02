@@ -1,5 +1,10 @@
 window.DOLL_MANIFEST = {
-  bodies: [],
+  bodies: [
+    "assets/body.gif",
+    "assets/body2.gif",
+    "assets/body3.gif",
+    "assets/body4.gif",
+  ],
   hair: [],
   tops: [],
   bottoms: [],
