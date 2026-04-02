@@ -16,7 +16,7 @@ const defaultLayerPositions = {
   tops: { x: 50, y: 56, scale: 0.95 },
   bottoms: { x: 50, y: 56, scale: 0.95 },
   dresses: { x: 50, y: 56, scale: 0.95 },
-  accessories: { x: 50, y: 50, scale: 0.85 },
+  accessories: { x: 50, y: 50, scale: 0.20 },
 };
 
 const state = {
