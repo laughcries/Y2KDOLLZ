@@ -1,17 +1,14 @@
 window.DOLL_MANIFEST = {
-  bodies: [],
-
-  hair: [
+  bodies: [
     "assets/tie.gif"
   ],
-
+  hair: [
+    "assets/tie16.gif"
+  ],
   tops: [
-    "assets/tie16.gif",
     "assets/tie11.gif"
   ],
-
   bottoms: [],
-
   dresses: []
 };
 
