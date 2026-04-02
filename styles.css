@@ -13,19 +13,15 @@ body {
   padding: 20px;
 }
 
-/* LAYOUT */
-.app {
+/* MAIN LAYOUT */
+.layout {
   display: flex;
   gap: 20px;
 }
 
-/* LEFT SIDE (DOLL) */
-.preview {
+/* LEFT PANEL */
+.preview-panel {
   width: 320px;
-}
-
-.preview h2 {
-  margin-bottom: 10px;
 }
 
 /* DOLL STAGE */
@@ -58,15 +54,18 @@ body {
 #layer-dresses { z-index: 4; }
 #layer-hair { 
   z-index: 5;
-  bottom: 190px; /* adjust if needed */
+  bottom: 190px;
+}
+#layer-accessories {
+  z-index: 6;
 }
 
-/* RIGHT SIDE (MENU) */
-.menu {
+/* RIGHT PANEL */
+.controls-panel {
   flex: 1;
 }
 
-/* CATEGORY BUTTONS */
+/* TABS */
 .tabs {
   display: flex;
   gap: 10px;
@@ -87,7 +86,7 @@ body {
 }
 
 /* GRID */
-.grid {
+.thumb-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
@@ -113,4 +112,20 @@ body {
   width: 100%;
   height: auto;
   image-rendering: pixelated;
+}
+
+/* HEADERS / TEXT */
+h1, h2 {
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  margin-bottom: 10px;
+}
+
+/* SEARCH */
+input[type="search"] {
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid pink;
 }
