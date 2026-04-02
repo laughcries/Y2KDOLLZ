@@ -29,6 +29,8 @@ const saveBtn = document.getElementById('saveBtn');
 
 function labelFromFile(fileName) {
   return fileName
+    .split('/')
+    .pop()
     .replace(/^imgi_\d+_?/i, '')
     .replace(/\.gif$/i, '')
     .replace(/[-_]/g, ' ')
@@ -36,7 +38,7 @@ function labelFromFile(fileName) {
 }
 
 function assetPath(fileName) {
-  return `assets/${encodeURIComponent(fileName)}`;
+  return fileName;
 }
 
 function setLayer(categoryKey, fileName) {
