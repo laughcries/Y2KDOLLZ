@@ -172,7 +172,7 @@ body {
 .doll-stage {
   position: relative;
   width: 100%;
-  height: 470px;
+  height: 300px;
   background:
     linear-gradient(180deg, #ffd8ea 0%, #ffc3dd 100%);
   border: 3px solid #fff;
